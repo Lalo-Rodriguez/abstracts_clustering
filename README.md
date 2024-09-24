@@ -25,6 +25,7 @@ abstracts_clustering/
 │
 ├── data/                           # Directory for storing the data
 ├── output/                         # Directory for saving generated graphs, PDFs, and pickle files
+├── prototype/prototype.ipynb       # Original prototype created as a Interactive Python Notebook file 
 ├── app.log                         # Log file
 ├── main.py                         # Main orchestration script
 ├── download_unzip_data.py          # Handles data download and extraction
