@@ -117,7 +117,7 @@ class AbstractPreprocessor:
         logging.info('Completed building of unique abstracts list.')
         return unique_abstract_list
 
-    def _preprocess_text(self, text: str) -> str:
+    def preprocess_text(self, text: str) -> str:
         """
         Cleans and preprocesses a single abstract by removing HTML tags, phrases,
         and stopwords, and then lemmatizing the tokens.
@@ -155,6 +155,6 @@ class AbstractPreprocessor:
         """
         unique_abstracts = self._create_unique_abstract_list()
         logging.info('Preprocessing abstracts.')
-        preprocessed_abstracts = [self._preprocess_text(a) for a in unique_abstracts]
+        preprocessed_abstracts = [self.preprocess_text(a) for a in unique_abstracts]
         logging.info('Finish preprocessing of abstracts.')
         return preprocessed_abstracts
