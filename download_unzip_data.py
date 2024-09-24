@@ -28,6 +28,27 @@ class DataDownloader:
         Directory where the unzipped files will be stored.
     json_file_name : str
         Name of the JSON file to store the unified XML data.
+    Methods:
+    --------
+    download_file():
+        Downloads a zip file from a specified URL.
+    move_file():
+        Moves the downloaded file to a data folder.
+    unzip_and_delete_downloaded_file():
+        Unzips the downloaded file and deletes the zip file afterward.
+    create_json_file():
+        Combines all unzipped XML files into a single JSON file.
+    remove_unzipped_xml_files():
+        Deletes the unzipped XML files.
+    automate_download_and_unzip():
+        Automates the download, move, unzip, conversion to JSON, and cleanup processes.
+    Raises:
+    -------
+    RequestException:
+        If downloading the file fails.
+    OSError:
+        If file or directory operations fail.
+
     """
 
     def __init__(self):
@@ -60,9 +81,7 @@ class DataDownloader:
         """
         Moves the downloaded file to the data folder.
         """
-        if not os.path.exists(self.data_folder):
-            os.makedirs(self.data_folder)
-
+        os.makedirs(self.data_folder, exist_ok=True)
         src_path = os.path.join(self.download_path, self.zip_file_name)
         new_path = os.path.join(self.data_folder, self.zip_file_name)
 
@@ -78,9 +97,7 @@ class DataDownloader:
         Unzips the downloaded file and deletes the zip file.
         """
         zip_path = os.path.join(self.data_folder, self.zip_file_name)
-
-        if not os.path.exists(self.unzip_folder):
-            os.makedirs(self.unzip_folder)
+        os.makedirs(self.unzip_folder, exist_ok=True)
 
         try:
             with zipfile.ZipFile(zip_path, mode='r') as zip_ref:

@@ -17,9 +17,11 @@ class ClusterSolution:
         self.clusterer = clusterer
         self.algorithm_name = algorithm_name
 
-        self.img_file = f'output/{self.algorithm_name}_{self.clusterer.n_clusters}.png'
-        self.pdf_file = f'output/{self.algorithm_name}_{self.clusterer.n_clusters}.pdf'
-        self.pickle_file = f'output/{self.algorithm_name}_{self.clusterer.n_clusters}.pkl'
+        self.output_dir = 'output'
+        os.makedirs(self.output_dir, exist_ok=True)
+        self.img_file = f'{self.output_dir}/{self.algorithm_name}_{self.clusterer.n_clusters}.png'
+        self.pdf_file = f'{self.output_dir}/{self.algorithm_name}_{self.clusterer.n_clusters}.pdf'
+        self.pickle_file = f'{self.output_dir}/{self.algorithm_name}_{self.clusterer.n_clusters}.pkl'
 
         self._evaluation_score = None
         self._cluster_labels = None
@@ -30,6 +32,16 @@ class ClusterSolution:
         self._word_dictionary = None
 
     def build_cluster_solution(self, x_data: list, preprocessed_abstracts: list):
+        """
+        Builds a clustering solution by fitting the clusterer on the given data and extracting relevant information.
+
+        Parameters:
+        -----------
+        x_data : list of array-like
+            The input data used for clustering.
+        preprocessed_abstracts : list of str
+            A list of preprocessed abstracts that correspond to the input data points.
+        """
         self._x_data = x_data
         self._cluster_labels = self.clusterer.fit_predict(self._x_data)
         self._centers = self.clusterer.cluster_centers_
@@ -44,7 +56,11 @@ class ClusterSolution:
         word_counter = WordCounter(num_top_words=20)
         self._word_dictionary = word_counter.get_top_words_each_cluster(self._clustered_data)
 
-    def get_evaluation_score(self):
+    def get_evaluation_score(self) -> float:
+        """
+        Getter function for the evaluation score private variable
+        :return: evaluation score
+        """
         return self._evaluation_score
 
     def generate_pickle_file(self):
@@ -53,7 +69,6 @@ class ClusterSolution:
 
         """
         logging.info(f'Saving the pickle file for {self.clusterer.n_clusters} clusters.')
-        os.makedirs('output', exist_ok=True)
 
         with open(self.pickle_file, 'wb') as file:
             pickle.dump(self.clusterer, file)
@@ -66,20 +81,19 @@ class ClusterSolution:
 
         """
         logging.info(f'Saving the scatter plot for {self.clusterer.n_clusters} clusters.')
-        os.makedirs('output', exist_ok=True)
 
         # Create the scatter plot
         plt.figure(figsize=(9, 7))
 
         # Use the cluster labels to color each point
         colors = cm.get_cmap('tab10', self.clusterer.n_clusters)(self._cluster_labels / self.clusterer.n_clusters)
-        plt.scatter(self._x_data[:, 0], self._x_data[:, 1], marker='.', s=30, lw=0, alpha=0.7, c=colors, edgecolor='k')
+        plt.scatter(self._x_data[:, 0], self._x_data[:, 1], marker='.', s=30, lw=0, alpha=0.7, c=colors)
 
         # Draw white circles at cluster centers
-        plt.scatter(self._centers[:, 0], self._centers[:, 1], marker='o', c="white", alpha=1, s=200, edgecolor='k')
+        plt.scatter(self._centers[:, 0], self._centers[:, 1], marker='o', c="white", alpha=1, s=200)
 
         for i, c in enumerate(self._centers):
-            plt.scatter(c[0], c[1], marker='$%d$' % i, alpha=1, s=50, edgecolor='k')
+            plt.scatter(c[0], c[1], marker='$%d$' % i, alpha=1, s=50)
 
         plt.title(f"Visualization of the clustered data (n_clusters = {self.clusterer.n_clusters})")
         plt.xlabel("Feature space for the 1st feature")
@@ -96,7 +110,6 @@ class ClusterSolution:
         """
         # Create a PDF document
         logging.info(f'Generating pdf file for the model with {self.clusterer.n_clusters} clusters.')
-        os.makedirs('output', exist_ok=True)
 
         w, h = letter
         c = canvas.Canvas(self.pdf_file, pagesize=letter)

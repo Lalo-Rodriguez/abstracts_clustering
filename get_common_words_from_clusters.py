@@ -7,12 +7,11 @@ logger = logging.getLogger(__name__)
 
 
 def _convert_numpy_to_int(obj):
+    """Recursively convert numpy integers to native Python integers."""
     if isinstance(obj, dict):
         return {_convert_numpy_to_int(k): _convert_numpy_to_int(v) for k, v in obj.items()}
-    elif isinstance(obj, list):
-        return [_convert_numpy_to_int(i) for i in obj]
-    elif isinstance(obj, tuple):
-        return tuple(_convert_numpy_to_int(i) for i in obj)
+    elif isinstance(obj, (list, tuple)):
+        return type(obj)(_convert_numpy_to_int(i) for i in obj)
     elif isinstance(obj, (np.int32, np.int64)):
         return int(obj)
     else:
@@ -27,6 +26,8 @@ class WordCounter:
     -----------
     num_top_words : int
         The number of top words to extract from each cluster.
+    vectorizer : CountVectorizer
+        A CountVectorizer instance with English stop words for tokenizing the text.
 
     Methods:
     --------
@@ -43,6 +44,7 @@ class WordCounter:
             Number of top words to extract from each cluster. Default is 20.
         """
         self.num_top_words = num_top_words
+        self.vectorizer = CountVectorizer(stop_words='english')
 
     def _extract_top_words(self, clustered_texts: list) -> list:
         """
@@ -62,10 +64,9 @@ class WordCounter:
             logging.warning("Empty text list provided for word extraction.")
             return []
 
-        vectorizer = CountVectorizer(stop_words='english')
-        x_data = vectorizer.fit_transform(clustered_texts)
+        x_data = self.vectorizer.fit_transform(clustered_texts)
         word_counts = np.asarray(x_data.sum(axis=0)).flatten()  # Get word counts across all texts
-        vocab = vectorizer.get_feature_names_out()  # List of words (vocabulary)
+        vocab = self.vectorizer.get_feature_names_out()  # List of words (vocabulary)
 
         # Combine words with their corresponding counts
         word_freq = [(word, word_counts[idx]) for idx, word in enumerate(vocab)]

@@ -14,17 +14,19 @@ logger = logging.getLogger(__name__)
 
 class DataModel(BaseModel):
     """
-        Data model that extracts and validates fields from the JSON input using pydantic.
+    Data model that extracts and validates fields from the JSON input using pydantic.
 
-        Attributes:
-        -----------
-        award_id : Optional[int]
-            The unique identifier for an award.
-        award_title : str
-            Title of the award.
-        abstract : Optional[str]
-            Abstract or description of the award.
-        """
+    This model uses AliasPath to extract nested data from a structured JSON object.
+
+    Attributes:
+    -----------
+    award_id : Optional[int]
+        The unique identifier for an award, extracted from 'rootTag > Award > AwardID'.
+    award_title : str
+        Title of the award, extracted from 'rootTag > Award > AwardTitle'.
+    abstract : Optional[str]
+        Abstract or description of the award, extracted from 'rootTag > Award > AbstractNarration'.
+    """
     award_id: Optional[int] = Field(validation_alias=AliasPath('rootTag', 'Award', 'AwardID'))
     award_title: str = Field(validation_alias=AliasPath('rootTag', 'Award', 'AwardTitle'))
     abstract: Optional[str] = Field(validation_alias=AliasPath('rootTag', 'Award', 'AbstractNarration'))
