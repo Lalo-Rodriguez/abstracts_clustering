@@ -1,9 +1,8 @@
 matplotlib==3.8.3
-nltk==3.8.1
 nltk==3.9.1
-numpy==2.1.1
 pydantic==2.9.2
 reportlab==4.2.2
 Requests==2.32.3
 scikit_learn==1.5.2
 xmltodict==0.13.0
+numpy==1.26.4
