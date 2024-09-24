@@ -14,7 +14,7 @@ The solution helps in analyzing the abstracts by extracting the most relevant to
 
 - **Data Downloading and Extraction**: Automates data fetching and extraction from a specified source.
 - **Preprocessing**: Cleans and preprocesses the text data for clustering.
-- **Clustering**: Uses K-Means to cluster abstracts based on TF-IDF and dimensionality-reduction techniques.
+- **Clustering**: Uses DBScan to cluster abstracts based on TF-IDF and dimensionality-reduction techniques.
 - **Word Analysis**: Extracts the top words per cluster.
 - **PDF and Graph Generation**: Creates visual and textual reports for each clustering solution.
 
@@ -65,16 +65,14 @@ The project will automatically download and preprocess the data if not already a
 ## Customization
 You can tweak the clustering process by adjusting the following parameters in 
 [vectorize_and_clustering.py](https://github.com/Lalo-Rodriguez/abstracts_clustering/blob/main/vectorize_and_clustering.py):
-- **n_alternatives:** Number of alternative clustering solutions to evaluate.
 - **n_features_tfid:** Number of features for TF-IDF vectorization.
 - **n_components_truncatesvd:** Number of components for dimensionality reduction with SVD.
 - **n_components_tsne:** Number of dimensions for t-SNE visualization.
-- **clusters_for_test:** List of cluster sizes to evaluate.
+- **epsilon_parameter:** List of cluster sizes to evaluate.
 
 ## Logging 
 All actions and errors are logged in the `app.log` file. 
 This helps track the steps and diagnose issues if the script doesn't run as expected.
 
 ## Future Improvements
-- Add support for different clustering algorithms (e.g., DBSCAN).
 - Improve PDF formatting and visualizations for large datasets.

@@ -1,0 +1,15 @@
+2024-09-24 16:01:29,017 - __main__ - INFO - ==================================================
+2024-09-24 16:01:29,018 - __main__ - INFO - Main script start
+2024-09-24 16:01:29,018 - __main__ - INFO - ==================================================
+
+2024-09-24 16:01:29,020 - root - INFO - Initializing the building of a unique abstracts list.
+2024-09-24 16:01:30,741 - root - INFO - Completed building of unique abstracts list.
+2024-09-24 16:01:30,810 - root - INFO - Preprocessing abstracts.
+2024-09-24 16:02:07,969 - root - INFO - Finish preprocessing of abstracts.
+2024-09-24 16:02:08,017 - root - INFO - Initializing the clustering algorithm.
+2024-09-24 16:02:14,104 - root - INFO - Saving the pickle file with the models used.
+2024-09-24 16:02:14,148 - root - INFO - pkl file saved as output/DBScan.pkl
+2024-09-24 16:02:14,148 - root - INFO - Saving the scatter plot for DBScan algorithm.
+2024-09-24 16:03:15,757 - root - INFO - img file saved as output/DBScan.png
+2024-09-24 16:03:15,758 - root - INFO - Generating pdf file with the clusters created by the DBScan algorithm.
+2024-09-24 16:03:15,920 - root - INFO - pdf file saved as output/DBScan.pdf

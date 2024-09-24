@@ -42,16 +42,11 @@ def main():
     preprocessed_abstracts = preprocessor.preprocess_abstracts()
 
     # Cluster the preprocessed abstracts
-    clustering_algorithm = ClusteringForAbstracts(n_alternatives=3,
-                                                  n_features_tfid=1000,
-                                                  n_components_truncatesvd=100,
-                                                  n_components_tsne=2)
-    clusters = clustering_algorithm.get_clusters(preprocessed_abstracts=preprocessed_abstracts)
-
-    for cluster in clusters:
-        cluster.generate_pickle_file()
-        cluster.generate_graph()
-        cluster.generate_pdf()
+    clustering_algorithm = ClusteringForAbstracts(n_features_tfid=1000, n_components_truncatesvd=100)
+    cluster_solution = clustering_algorithm.get_clusters(preprocessed_abstracts=preprocessed_abstracts)
+    cluster_solution.generate_pickle_file()
+    cluster_solution.generate_graph()
+    cluster_solution.generate_pdf()
 
 
 if __name__ == '__main__':
