@@ -77,5 +77,4 @@ This helps track the steps and diagnose issues if the script doesn't run as expe
 
 ## Future Improvements
 - Add support for different clustering algorithms (e.g., DBSCAN).
-- Enhance the preprocessing step with more NLP techniques like lemmatization.
 - Improve PDF formatting and visualizations for large datasets.
