@@ -1,0 +1,36 @@
+2024-09-25 19:35:12,538 - __main__ - INFO - ==================================================
+2024-09-25 19:35:12,539 - __main__ - INFO - Main script start
+2024-09-25 19:35:12,539 - __main__ - INFO - ==================================================
+
+2024-09-25 19:35:12,539 - root - INFO - Download started.
+2024-09-25 19:36:01,172 - root - INFO - File downloaded.
+2024-09-25 19:36:01,176 - root - INFO - File moved to data\2020.zip
+2024-09-25 19:36:09,563 - root - INFO - Unzipping file 2020.zip
+2024-09-25 19:36:09,567 - root - INFO - Deleted file 2020.zip
+2024-09-25 19:36:09,571 - root - INFO - Creating JSON file.
+2024-09-25 19:37:35,411 - root - INFO - JSON file created: all_data.json
+2024-09-25 19:37:38,502 - root - INFO - Removed unzipped XML files from data/unzipped_files
+2024-09-25 19:37:38,502 - root - INFO - Data file all_data.json ready to be used.
+2024-09-25 19:37:38,505 - root - INFO - Initializing the building of a unique abstracts list.
+2024-09-25 19:37:40,182 - root - INFO - Completed building of unique abstracts list.
+2024-09-25 19:37:40,235 - root - INFO - Preprocessing abstracts.
+2024-09-25 19:38:14,735 - root - INFO - Finish preprocessing of abstracts.
+2024-09-25 19:38:14,747 - root - INFO - Initializing the clustering algorithm.
+2024-09-25 19:38:44,939 - root - INFO - Saving the pickle file with the models used.
+2024-09-25 19:38:45,011 - root - INFO - pkl file saved as output/kmeans_16_clusters.pkl
+2024-09-25 19:38:45,011 - root - INFO - Saving the scatter plot for kmeans_16_clusters algorithm.
+2024-09-25 19:39:40,117 - root - INFO - img file saved as output/kmeans_16_clusters.png
+2024-09-25 19:39:40,118 - root - INFO - Generating pdf file with the clusters created by the kmeans_16_clusters algorithm.
+2024-09-25 19:39:40,278 - root - INFO - pdf file saved as output/kmeans_16_clusters.pdf
+2024-09-25 19:39:40,278 - root - INFO - Saving the pickle file with the models used.
+2024-09-25 19:39:40,281 - root - INFO - pkl file saved as output/kmeans_17_clusters.pkl
+2024-09-25 19:39:40,282 - root - INFO - Saving the scatter plot for kmeans_17_clusters algorithm.
+2024-09-25 19:40:30,148 - root - INFO - img file saved as output/kmeans_17_clusters.png
+2024-09-25 19:40:30,148 - root - INFO - Generating pdf file with the clusters created by the kmeans_17_clusters algorithm.
+2024-09-25 19:40:30,302 - root - INFO - pdf file saved as output/kmeans_17_clusters.pdf
+2024-09-25 19:40:30,302 - root - INFO - Saving the pickle file with the models used.
+2024-09-25 19:40:30,306 - root - INFO - pkl file saved as output/kmeans_13_clusters.pkl
+2024-09-25 19:40:30,307 - root - INFO - Saving the scatter plot for kmeans_13_clusters algorithm.
+2024-09-25 19:41:18,408 - root - INFO - img file saved as output/kmeans_13_clusters.png
+2024-09-25 19:41:18,408 - root - INFO - Generating pdf file with the clusters created by the kmeans_13_clusters algorithm.
+2024-09-25 19:41:18,567 - root - INFO - pdf file saved as output/kmeans_13_clusters.pdf
