@@ -1,8 +1,11 @@
+kneed==0.8.5
 matplotlib==3.8.3
 nltk==3.9.1
+numpy==1.26.4
+pandas==2.2.3
 pydantic==2.9.2
 reportlab==4.2.2
 Requests==2.32.3
 scikit_learn==1.5.2
+seaborn==0.13.2
 xmltodict==0.13.0
-numpy==1.26.4
