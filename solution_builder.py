@@ -1,77 +1,60 @@
-from sklearn.metrics import silhouette_score
+import logging
+import os
 import pickle
+import numpy as np
+import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
-from matplotlib import cm
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import inch
-import logging
-import os
+from sklearn.manifold import TSNE
 from get_common_words_from_clusters import WordCounter
 
 logger = logging.getLogger(__name__)
 
 
 class ClusterSolution:
-    def __init__(self, clusterer, algorithm_name: str):
-        self.clusterer = clusterer
+    def __init__(self,
+                 algorithm_name: str,
+                 abstracts: list,
+                 normalized_x_data: np.array,
+                 labels: np.array,
+                 models_used: dict,
+                 n_components_tsne: int = 2):
         self.algorithm_name = algorithm_name
+        self.abstracts = abstracts
+        self.normalized_x_data = normalized_x_data
+        self.labels = labels
+        self.models_used = models_used
+        self.n_components_tsne = n_components_tsne
 
         self.output_dir = 'output'
         os.makedirs(self.output_dir, exist_ok=True)
-        self.img_file = f'{self.output_dir}/{self.algorithm_name}_{self.clusterer.n_clusters}.png'
-        self.pdf_file = f'{self.output_dir}/{self.algorithm_name}_{self.clusterer.n_clusters}.pdf'
-        self.pickle_file = f'{self.output_dir}/{self.algorithm_name}_{self.clusterer.n_clusters}.pkl'
+        self.img_file = f'{self.output_dir}/{self.algorithm_name}.png'
+        self.pdf_file = f'{self.output_dir}/{self.algorithm_name}.pdf'
+        self.pickle_file = f'{self.output_dir}/{self.algorithm_name}.pkl'
 
-        self._evaluation_score = None
-        self._cluster_labels = None
-        self._centers = None
-        self._clustered_data = None
-        self._preprocessed_abstracts = None
-        self._x_data = None
-        self._word_dictionary = None
+        self.words_in_clusters = self._build_cluster_word_dictionary()
 
-    def build_cluster_solution(self, x_data: list, preprocessed_abstracts: list):
-        """
-        Builds a clustering solution by fitting the clusterer on the given data and extracting relevant information.
-
-        Parameters:
-        -----------
-        x_data : list of array-like
-            The input data used for clustering.
-        preprocessed_abstracts : list of str
-            A list of preprocessed abstracts that correspond to the input data points.
-        """
-        self._x_data = x_data
-        self._cluster_labels = self.clusterer.fit_predict(self._x_data)
-        self._centers = self.clusterer.cluster_centers_
-        self._evaluation_score = silhouette_score(self._x_data, self._cluster_labels)
-
-        # Group abstracts by cluster labels
+    def _build_cluster_word_dictionary(self) -> dict:
         clustered_data = {}
-        for i, label in enumerate(self._cluster_labels):
-            clustered_data.setdefault(label, []).append(preprocessed_abstracts[i])
-        self._clustered_data = clustered_data
+        for i, label in enumerate(self.labels):
+            clustered_data.setdefault(label, []).append(self.abstracts[i])
 
         word_counter = WordCounter(num_top_words=20)
-        self._word_dictionary = word_counter.get_top_words_each_cluster(self._clustered_data)
-
-    def get_evaluation_score(self) -> float:
-        """
-        Getter function for the evaluation score private variable
-        :return: evaluation score
-        """
-        return self._evaluation_score
+        word_dictionary = word_counter.get_top_words_each_cluster(clustered_data)
+        return word_dictionary
 
     def generate_pickle_file(self):
         """
         Generates a pickle file with the model for posterior usage.
 
         """
-        logging.info(f'Saving the pickle file for {self.clusterer.n_clusters} clusters.')
+        logging.info(f'Saving the pickle file with the models used.')
 
         with open(self.pickle_file, 'wb') as file:
-            pickle.dump(self.clusterer, file)
+            pickle.dump(self.models_used, file)
 
         logging.info(f'pkl file saved as {self.pickle_file}')
 
@@ -80,22 +63,24 @@ class ClusterSolution:
         Creates a scatter plot of clustered data and saves it as an image.
 
         """
-        logging.info(f'Saving the scatter plot for {self.clusterer.n_clusters} clusters.')
+        centers = self.models_used['cluster_algorithm'].cluster_centers_
+        logging.info(f'Saving the scatter plot for {self.algorithm_name} algorithm.')
 
         # Create the scatter plot
         plt.figure(figsize=(9, 7))
 
-        # Use the cluster labels to color each point
-        colors = cm.get_cmap('tab10', self.clusterer.n_clusters)(self._cluster_labels / self.clusterer.n_clusters)
-        plt.scatter(self._x_data[:, 0], self._x_data[:, 1], marker='.', s=30, lw=0, alpha=0.7, c=colors)
+        x_2d_data = TSNE(n_components=2).fit_transform(self.normalized_x_data)
+        df = pd.DataFrame(x_2d_data, columns=['Var1', 'Var2'])
+        p = sns.scatterplot(data=df, x='Var1', y='Var2', hue=self.labels, legend="full", palette="deep")
+        sns.move_legend(p, "upper right", bbox_to_anchor=(1.17, 1.), title='Clusters')
 
         # Draw white circles at cluster centers
-        plt.scatter(self._centers[:, 0], self._centers[:, 1], marker='o', c="white", alpha=1, s=200)
+        plt.scatter(centers[:, 0], centers[:, 1], marker='o', c="white", alpha=1, s=200)
 
-        for i, c in enumerate(self._centers):
+        for i, c in enumerate(centers):
             plt.scatter(c[0], c[1], marker='$%d$' % i, alpha=1, s=50)
 
-        plt.title(f"Visualization of the clustered data (n_clusters = {self.clusterer.n_clusters})")
+        plt.title(f"Visualization of the clustered data using the {self.algorithm_name} algorithm)")
         plt.xlabel("Feature space for the 1st feature")
         plt.ylabel("Feature space for the 2nd feature")
 
@@ -109,7 +94,7 @@ class ClusterSolution:
 
         """
         # Create a PDF document
-        logging.info(f'Generating pdf file for the model with {self.clusterer.n_clusters} clusters.')
+        logging.info(f'Generating pdf file with the clusters created by the {self.algorithm_name} algorithm.')
 
         w, h = letter
         c = canvas.Canvas(self.pdf_file, pagesize=letter)
@@ -121,10 +106,10 @@ class ClusterSolution:
         image_height = 5 * inch  # Height of the image
 
         # Sort the outer dictionary by number of clusters and inner dictionaries by cluster number
-        sorted_data = dict(sorted(self._word_dictionary.items()))
+        sorted_data = dict(sorted(self.words_in_clusters.items()))
 
         # Write the title
-        c.drawString(x, y, text=f'Alternative with {self.clusterer.n_clusters} clusters:')
+        c.drawString(x, y, text=f'Clusters created by the {self.algorithm_name} algorithm')
         y -= (line_height + image_height)  # Move down for the title
 
         # Add the image

@@ -78,7 +78,8 @@ class AbstractPreprocessor:
 
         # Define custom stop words
         custom_stop_words = ['project', 'data', 'research', 'student', 'award', 'program', 'using', 'impact', 'new',
-                             'support', 'nsf', 'foundation', 'study', 'science', 'use', 'develop', 'development']
+                             'support', 'nsf', 'foundation', 'study', 'science', 'use', 'develop', 'development',
+                             'model', 'used']
 
         # Ensure NLTK resources are downloaded
         _download_nltk_resources()

@@ -42,10 +42,7 @@ def main():
     preprocessed_abstracts = preprocessor.preprocess_abstracts()
 
     # Cluster the preprocessed abstracts
-    clustering_algorithm = ClusteringForAbstracts(n_alternatives=3,
-                                                  n_features_tfid=1000,
-                                                  n_components_truncatesvd=100,
-                                                  n_components_tsne=2)
+    clustering_algorithm = ClusteringForAbstracts(n_features_tfid=1000, n_components_truncatesvd=100)
     clusters = clustering_algorithm.get_clusters(preprocessed_abstracts=preprocessed_abstracts)
 
     for cluster in clusters:
