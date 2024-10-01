@@ -38,6 +38,10 @@ class ClusterSolution:
         self.words_in_clusters = self._build_cluster_word_dictionary()
 
     def _build_cluster_word_dictionary(self) -> dict:
+        """
+        Function used to get the num_top
+        :return: A dictionary with the num_top_words in each cluster and their frequency
+        """
         clustered_data = {}
         for i, label in enumerate(self.labels):
             clustered_data.setdefault(label, []).append(self.abstracts[i])

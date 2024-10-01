@@ -39,7 +39,18 @@ class ClusteringForAbstracts:
         self.k_max = 20
         self.n_solutions = 3
 
-    def elbow_method(self, data: np.array) -> int:
+    def _elbow_method(self, data: np.array) -> int:
+        """
+        Private function that returns an int representing the k parameter (Of K-Means algorithm)
+        where the elbow_point is located.
+
+        Args:
+            data: Data from the research abstracts after the tf-idf vectorization,
+            truncated SVD and Normalization processes.
+
+        Returns:
+             An int representing the k parameter (Of K-Means algorithm) where the elbow_point is located.
+        """
         inertia = []
 
         for k in range(self.k_min, self.k_max + 1):
@@ -59,7 +70,22 @@ class ClusteringForAbstracts:
 
         return elbow_point
 
-    def silhouette_score_for_range(self, data: np.array, elbow_point: int) -> dict:
+    def _silhouette_score_for_range(self, data: np.array, elbow_point: int) -> dict:
+        """
+        Private function that returns the n-higher silhouette score solutions near the
+        elbow_point based on the self.n_solutions parameter defined in the vectorize_and_clustering
+        builder.
+
+        Args:
+            data: Data from the research abstracts after the tf-idf vectorization,
+            truncated SVD and Normalization processes.
+            elbow_point: An int representing the k parameter (Of K-Means algorithm) where the
+            elbow_point is located. Used as the starting point of the local search.
+
+        Returns:
+             A dictionary with the sorted best models got after near the elbow_point. Using the
+             silhouette_score.
+        """
         k_min = max(elbow_point - self.n_solutions, 2)  # Ensure k_min is at least 2
         k_max = elbow_point + self.n_solutions
 
@@ -94,8 +120,21 @@ class ClusteringForAbstracts:
         return best_kmeans
 
     def _find_best_kmeans_k(self, data: np.array) -> dict:
-        elbow_point = self.elbow_method(data)
-        best_kmeans = self.silhouette_score_for_range(data, elbow_point)
+        """
+        Private function that returns the n-higher silhouette score solutions near the
+        elbow_point based on the self.n_solutions parameter defined in the vectorize_and_clustering
+        builder.
+
+        Args:
+            data: Data from the research abstracts after the tf-idf vectorization,
+            truncated SVD and Normalization processes.
+
+        Returns:
+             A dictionary with the sorted best models got after near the elbow_point. Using the
+             silhouette_score.
+        """
+        elbow_point = self._elbow_method(data)
+        best_kmeans = self._silhouette_score_for_range(data, elbow_point)
 
         return best_kmeans
 
@@ -125,11 +164,10 @@ class ClusteringForAbstracts:
             svd_and_normalizer = make_pipeline(svd, normalizer)
             x_data = svd_and_normalizer.fit_transform(tfidf_data)
 
-            # Step 3: t-SNE for dimensionality reduction to 2D/3D space
-
-            # Step 4: Get the biggest "n" score for the num_cluster parameter
+            # Step 3: Get n-solutions based on the elbow_method and silhouette_score_for_range
             kmeans_options = self._find_best_kmeans_k(x_data)
 
+            # Step 4: Build the solutions based on the k-means options
             for key, variables in kmeans_options.items():
                 models_to_save = {
                     'tfidf_vectorizer': tfidf_vectorizer,
